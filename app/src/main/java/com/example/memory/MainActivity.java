@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFirstRound = true; // Изменённая переменная
     private MediaPlayer backgroundMusic; // Фоновая музыка
     private MediaPlayer clickSound;
+    private Button restartButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
         backgroundMusic = MediaPlayer.create(this, R.raw.background_music); // Замените на имя вашего файла
         backgroundMusic.setLooping(true); // Зациклить музыку
         backgroundMusic.start();
+        restartButton = findViewById(R.id.btn_restart);
+        restartButton.setOnClickListener(v -> restartGame());
+
         Button settingsButton = findViewById(R.id.btn_settings);
         settingsButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
@@ -100,6 +104,30 @@ public class MainActivity extends AppCompatActivity {
             clickSound.setVolume(1, 1);
         }
     }
+    private void restartGame() {
+        // Очищаем список звёзд
+        for (ImageView star : stars) {
+            layout.removeView(star);
+        }
+        stars.clear();
+
+        // Сбрасываем очки
+        score = 0;
+        scoreTextView.setText("Score: " + score);
+
+        // Обновляем состояние игры
+        isFirstRound = true;
+        lastClickedStar = null;
+
+        // Добавляем начальные звёзды
+        for (int i = 0; i < 5; i++) {
+            addNewStar();
+        }
+
+        // Сообщение об успешном перезапуске
+        Toast.makeText(this, "Игра началась заново!", Toast.LENGTH_SHORT).show();
+    }
+
 
     private void addNewStar() {
         ImageView star = new ImageView(this);
